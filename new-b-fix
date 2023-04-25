@@ -1,2 +1,2 @@
 #!/bin/sh
-git checkout main && git pull && git checkout -b fix/$1
+git checkout main && git pull origin main && git checkout -b fix/$1
