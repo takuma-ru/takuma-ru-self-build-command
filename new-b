@@ -1,2 +1,13 @@
 #!/bin/sh
-git checkout main && git pull && git checkout -b $1
+if [[ $2 = "" ]]; then # 引数がない場合
+  echo "Error : Requires an argument" 1>&2
+  exit 2
+elif [[ $# -gt 2 ]]; then # 引数が複数の場合
+  echo "Error : Too many arguments" 1>&2
+  exit 2
+elif [[ ! $1 = "main" && ! $1 = "develop" ]]; then # 引数が間違っている場合
+  echo "Error : The first argument must be main or develop" 1>&2
+  exit 2
+else
+  git checkout $1 && git pull origin $1 && git checkout -b $2
+fi
