@@ -1,13 +1,70 @@
 #!/bin/sh
-if [[ $2 = "" ]]; then # 引数がない場合
-  echo "Error : Requires an argument" 1>&2
+
+function usage {
+  cat <<EOM
+Usage: $(basename "$0") [OPTION]...
+  -h, --help     Display help
+  -f VALUE       A explanation for arg called a
+  -b VALUE       A explanation for arg called b
+  -r VALUE       A explanation for arg called c
+EOM
+
   exit 2
-elif [[ $# -gt 2 ]]; then # 引数が複数の場合
-  echo "Error : Too many arguments" 1>&2
-  exit 2
-elif [[ ! $1 = "main" && ! $1 = "develop" ]]; then # 引数が間違っている場合
-  echo "Error : The first argument must be main or develop" 1>&2
-  exit 2
+}
+
+# ショートオプションがある時の引数存在判定
+function checkArg {
+  if [[ $2 = "" ]]; then # 引数がない場合
+    printf "\e[1;37;41mError\e[0m : Requires an base branch name argument"
+    echo 1>&2
+    exit 2
+  elif [[ $3 = "" ]]; then # 引数がない場合
+    printf "\e[1;37;41mError\e[0m : Requires an new branch name argument"
+    echo 1>&2
+    exit 2
+  fi
+}
+
+if [[ $1 = -* ]]; then
+  # オプションが指定された場合の処理
+  while getopts ":f:b:r:h" optKey; do
+    case "$optKey" in
+      f)
+        checkArg $1 $2 $3
+        printf "checkout: ${2} -> feature/${3}"
+        echo
+        git checkout $2 && git pull origin $2 && git checkout -b feature/$3
+        ;;
+      b)
+        checkArg $1 $2 $3
+        printf "checkout: ${2} -> feature/${3}"
+        echo
+        git checkout $2 && git pull origin $2 && git checkout -b fix/$3
+        ;;
+      r)
+        checkArg $1 $2 $3
+        printf "checkout: ${2} -> feature/${3}"
+        echo
+        git checkout $2 && git pull origin $2 && git checkout -b refactoring/$3
+        ;;
+      '-h'|'--help'|* )
+        usage
+        ;;
+    esac
+  done
 else
-  git checkout $1 && git pull origin $1 && git checkout -b $2
+  if [[ $1 = "" ]]; then # 引数がない場合
+    printf "\e[1;37;41mError\e[0m : Requires an base branch name argument"
+    echo 1>&2
+    exit 2
+  elif [[ $2 = "" ]]; then # 引数がない場合
+    printf "\e[1;37;41mError\e[0m : Requires an new branch name argument"
+    echo 1>&2
+    exit 2
+  else
+     # オプションが指定されていない場合の処理
+    printf "checkout: ${1} -> ${2}"
+    echo
+    git checkout $1 && git pull origin $1 && git checkout -b $2
+  fi
 fi
