@@ -5,6 +5,7 @@ function usage {
 Usage: $(basename "$0") [OPTIONS] [BASE_BRANCH_NAME] [NEW_BRANCH_NAME]
   -h, --help                                 Display help
   -f [BASE_BRANCH_NAME] [NEW_BRANCH_NAME]    feature/[NEW_BRANCH_NAME]
+  -e [BASE_BRANCH_NAME] [NEW_BRANCH_NAME]    enhancement/[NEW_BRANCH_NAME]
   -b [BASE_BRANCH_NAME] [NEW_BRANCH_NAME]    fix/[NEW_BRANCH_NAME]
   -r [BASE_BRANCH_NAME] [NEW_BRANCH_NAME]    refactoring/[NEW_BRANCH_NAME]
   -d [BASE_BRANCH_NAME] [NEW_BRANCH_NAME]    doc/[NEW_BRANCH_NAME]
@@ -12,6 +13,11 @@ EOM
 
   exit 2
 }
+
+# $0 : コマンド名
+# $1 : オプション
+# $2 : ブランチ切断元
+# $3 : 新しいブランチ名
 
 # ショートオプションがある時の引数存在判定
 function checkArg {
@@ -28,31 +34,37 @@ function checkArg {
 
 if [[ $1 = -* ]]; then
   # オプションが指定された場合の処理
-  while getopts ":f:b:r:h" optKey; do
+  while getopts ":f:e:b:r:d:h" optKey; do
     case "$optKey" in
       f)
         checkArg $1 $2 $3
-        printf "checkout: ${2} -> feature/${3}"
+        printf "Create branch | from:\e[33m${2}\e >>> to:\e[32mfeature/${3}\e"
         echo
-        git checkout $2 && git pull origin $2 && git checkout -b feature/$3
+        git switch $2 && git pull origin $2 && git switch -c feature/$3
+        ;;
+      e)
+        checkArg $1 $2 $3
+        printf "Create branch | from:\e[33m${2}\e >>> to:\e[32menhancement/${3}\e"
+        echo
+        git switch $2 && git pull origin $2 && git switch -c enhancement/$3
         ;;
       b)
         checkArg $1 $2 $3
-        printf "checkout: ${2} -> feature/${3}"
+        printf "Create branch | from:\e[33m${2}\e >>> to:\e[32mfix/${3}\e"
         echo
-        git checkout $2 && git pull origin $2 && git checkout -b fix/$3
+        git switch $2 && git pull origin $2 && git switch -c fix/$3
         ;;
       r)
         checkArg $1 $2 $3
-        printf "checkout: ${2} -> feature/${3}"
+        printf "Create branch | from:\e[33m${2}\e >>> to:\e[32mrefactoring/${3}\e"
         echo
-        git checkout $2 && git pull origin $2 && git checkout -b refactoring/$3
+        git switch $2 && git pull origin $2 && git switch -c refactoring/$3
         ;;
       d)
         checkArg $1 $2 $3
-        printf "checkout: ${2} -> feature/${3}"
+        printf "Create branch | from:\e[33m${2}\e >>> to:\e[32mdoc/${3}\e"
         echo
-        git checkout $2 && git pull origin $2 && git checkout -b doc/$3
+        git switch $2 && git pull origin $2 && git switch -c doc/$3
         ;;
       '-h'|'--help'|* )
         usage
@@ -72,6 +84,6 @@ else
      # オプションが指定されていない場合の処理
     printf "checkout: ${1} -> ${2}"
     echo
-    git checkout $1 && git pull origin $1 && git checkout -b $2
+    git switch $1 && git pull origin $1 && git switch -c $2
   fi
 fi
