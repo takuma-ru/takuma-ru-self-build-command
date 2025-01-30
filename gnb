@@ -38,31 +38,31 @@ if [[ $1 = -* ]]; then
     case "$optKey" in
       f)
         checkArg $1 $2 $3
-        printf "Create branch | from:\e[33m${2}\e >>> to:\e[32mfeature/${3}\e"
+        printf "Create branch | from:${2} >>> to:feature/${3}"
         echo
         git switch $2 && git pull origin $2 && git switch -c feature/$3
         ;;
       e)
         checkArg $1 $2 $3
-        printf "Create branch | from:\e[33m${2}\e >>> to:\e[32menhancement/${3}\e"
+        printf "Create branch | from:${2} >>> to:enhancement/${3}"
         echo
         git switch $2 && git pull origin $2 && git switch -c enhancement/$3
         ;;
       b)
         checkArg $1 $2 $3
-        printf "Create branch | from:\e[33m${2}\e >>> to:\e[32mfix/${3}\e"
+        printf "Create branch | from:${2} >>> to:fix/${3}"
         echo
         git switch $2 && git pull origin $2 && git switch -c fix/$3
         ;;
       r)
         checkArg $1 $2 $3
-        printf "Create branch | from:\e[33m${2}\e >>> to:\e[32mrefactoring/${3}\e"
+        printf "Create branch | from:${2} >>> to:refactoring/${3}"
         echo
         git switch $2 && git pull origin $2 && git switch -c refactoring/$3
         ;;
       d)
         checkArg $1 $2 $3
-        printf "Create branch | from:\e[33m${2}\e >>> to:\e[32mdoc/${3}\e"
+        printf "Create branch | from:${2} >>> to:doc/${3}"
         echo
         git switch $2 && git pull origin $2 && git switch -c doc/$3
         ;;
@@ -82,7 +82,7 @@ else
     exit 2
   else
      # オプションが指定されていない場合の処理
-    printf "checkout: ${1} -> ${2}"
+    printf "Create branch | from:${2} >>> to:${3}"
     echo
     git switch $1 && git pull origin $1 && git switch -c $2
   fi

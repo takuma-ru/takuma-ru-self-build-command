@@ -33,3 +33,8 @@ sudo chmod 755 ~/my-commands/
 ```bash
 #!/bin/sh
 ```
+
+### zshリロード
+```bash
+source ~/.zshrc
+```

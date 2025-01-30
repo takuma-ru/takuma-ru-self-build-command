@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# 引数から除外するブランチ名を受け取る。何も指定されていない場合は、developとmainをデフォルト値とする。
+exclude_branches=("$@")
+if [ ${#exclude_branches[@]} -eq 0 ]; then
+  exclude_branches=("develop" "main")
+fi
+
+# 引数から -D または -d オプションを受け取る。デフォルトは -d。
+delete_option="-d"
+for arg in "$@"; do
+  if [[ "$arg" == "-D" || "$arg" == "-d" ]]; then
+    delete_option="$arg"
+    break
+  fi
+done
+
+# 除外するブランチ名をgrepのパターンに変換
+exclude_pattern=$(printf "|%s" "${exclude_branches[@]}")
+exclude_pattern=${exclude_pattern:1} # 先頭の "|" を削除
+
+# ブランチを削除
+git branch | grep -vE "(${exclude_pattern})" | xargs git branch $delete_option
